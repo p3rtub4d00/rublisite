@@ -44,7 +44,7 @@ test('legal pages render the source documents and cross links', async () => {
   assert.match(terms, /Versão 1.0 — 15 de setembro de 2026/);
   assert.match(terms, /Natureza da intermediação/);
   assert.match(terms, /href="(?:\/webrubli)?\/privacidade\/"/);
-  assert.match(privacy, /Dados que podemos tratar/);
+  assert.match(privacy, /Dados de navegação/);
   assert.match(privacy, /Seus direitos/);
   assert.doesNotMatch(terms + privacy, /Documento oficial pendente/);
 });
