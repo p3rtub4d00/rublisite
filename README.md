@@ -20,19 +20,27 @@ As variáveis de `.env.example` são lidas do ambiente no momento do build. `SIT
 
 Conecte o repositório GitHub ao Render como **Static Site**. Use `npm run build` como Build Command e `dist` como Publish Directory. O arquivo `render.yaml` contém a mesma configuração. Após definir `SITE_URL`, execute um novo deploy para gerar canonical e sitemap.
 
-## Publicação no GitHub Pages
+## AdSense e domínio principal
 
-O fluxo `.github/workflows/pages.yml` publica automaticamente o site após cada envio para a branch `main`. No GitHub, abra **Settings → Pages** e selecione **GitHub Actions** em **Source**. O endereço público deste repositório é:
+No Render, use o serviço **Static Site**, Build Command `npm run build` e Publish Directory `dist`. Não use `npm ci`: o projeto não tem dependências nem lockfile. O Blueprint configura Node 22, SITE_URL, WhatsApp e Instagram. Se o serviço já existir, preencha essas variáveis no painel; apenas adicionar o YAML ao GitHub não modifica um serviço manual existente.
 
-```text
-https://p3rtub4d00.github.io/webrubli/
-```
+Adicione `rubli.com.br` e, se desejar, `www.rubli.com.br` em Settings → Custom Domains. Configure no Registro.br os registros que o Render apresentar e aguarde a validação e o HTTPS. Mantenha o serviço e os registros de `clubeon.rubli.com.br` como estão. Deixe BASE_PATH vazio no Render. SITE_URL deve ser `https://rubli.com.br`.
 
-O build do Pages usa `BASE_PATH=/webrubli` para que imagens, estilos, scripts e links funcionem dentro do caminho do repositório.
+Em Sites no AdSense, cadastre `rubli.com.br`. Copie seu identificador real para a variável de build `ADSENSE_PUBLISHER_ID` no Render e execute um novo deploy. O build aceita `pub-` ou `ca-pub-` com 16 dígitos e gera:
+
+- metatag `google-adsense-account` no HTML de todas as páginas;
+- `https://rubli.com.br/ads.txt` com o mesmo identificador;
+- canonical, sitemap e robots quando SITE_URL estiver configurada.
+
+Sem identificador, não há metatag nem ads.txt. Valores inválidos interrompem o build. Nenhuma conta fictícia é publicada, e nenhum script de anúncios ou cookie publicitário é ativado nesta etapa. Confira os dois recursos publicados e solicite a revisão no AdSense. A configuração técnica não garante aprovação: a decisão depende do conteúdo e da análise do Google.
+
+Após o domínio receber o status Pronto, a integração dos blocos publicitários e das opções de privacidade será feita no catálogo. Usando a mesma conta, o ads.txt do domínio principal autoriza esse vendedor também no subdomínio; não é necessário acrescentar `subdomain=` nesse caso. Uma conta diferente no catálogo exige revisar essa configuração. Não há redirecionamento nem iframe para disfarçar o catálogo.
+
+Fontes: [Conectar ao AdSense](https://support.google.com/adsense/answer/7584263?hl=pt-BR), [ads.txt e subdomínios](https://support.google.com/adsense/answer/9785052), [Blueprint Render](https://render.com/docs/blueprint-spec).
 
 ## Termos e privacidade
 
-As páginas `/termos/` e `/privacidade/` são geradas diretamente dos arquivos Markdown em `docs/`, copiados dos documentos do projeto Rubli original. Atualize esses arquivos e execute um novo build para publicar versões revisadas. Os documentos ainda contêm campos entre colchetes para CNPJ, endereço e contatos e pedem revisão jurídica antes do lançamento público.
+A página `/privacidade/` é gerada de `docs/PRIVACIDADE-SITE.md`, específica para o site institucional e a etapa de verificação do AdSense. A página `/termos/` usa o documento original do aplicativo em `docs/TERMOS-DE-USO.md`. Atualize esses arquivos e execute um novo build para publicar versões revisadas. Os termos originais do aplicativo ainda contêm campos de identificação entre colchetes; revise esses dados antes de usar o documento como termos definitivos do produto. A política original do aplicativo permanece preservada em docs/POLITICA-DE-PRIVACIDADE.md.
 
 ## Conteúdo que requer validação
 
